@@ -54,7 +54,17 @@ app.put('/api/employees/:id', auth, async (req, res) => {
 app.delete('/api/employees/:id', auth, async (req, res) => {
   const employee = await Employee.findByIdAndDelete(req.params.id); if (!employee) return res.status(404).json({ message: 'Employee not found' }); res.json({ message: 'Employee removed' });
 });
+
 const port = process.env.PORT || 5000;
-mongoose.connect(process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/staffsync')
-  .then(() => app.listen(port, () => console.log(`StaffSync API listening on ${port}`)))
-  .catch(err => { console.error('MongoDB connection failed:', err.message); process.exit(1); });
+
+app.listen(port, '0.0.0.0', () => {
+  console.log(`StaffSync API listening on ${port}`);
+});
+
+mongoose.connect(process.env.MONGO_URI)
+  .then(() => {
+    console.log('MongoDB connected successfully');
+  })
+  .catch((err) => {
+    console.error('MongoDB connection failed:', err.message);
+  });
